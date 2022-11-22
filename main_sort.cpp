@@ -3,13 +3,12 @@
 #include <iostream>
 #include <graphics.h>
 #include <bits/stdc++.h>
-#include <time.h>
-#include <cstdlib>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
-// Initialize the size
-// with the total numbers to sorted
+// Initialize the size with the total numbers to sorted
 // and the gap to be maintained in graph
 vector<int> numbers;
 int size = 200;
@@ -22,19 +21,18 @@ void swap(int i, int j, int x, int y)
 	// by making it black again and then draw the pixel
 	// for white color.
 	//setlinestyle(1, 0, 3);
-  
 	setcolor(GREEN);
 	line(i, size, i, size - x);
 	setcolor(BLACK);
 	line(i, size, i, size - x);
-	setcolor(WHITE);
+	setcolor(YELLOW);
 	line(i, size, i, size - y);
-  
+	
+	//delay(2);
 	// Swapping the first line with the correct line
 	// by making it black again and then draw the pixel
 	// for white color.
 	
-	//setlinestyle(1, 0, 3);
 	setcolor(BLUE);
 	line(j, size, j, size - y);
 	setcolor(BLACK);
@@ -46,11 +44,16 @@ void swap(int i, int j, int x, int y)
 // Bubble sort function
 void bubbleSort()
 {
+	std::random_shuffle(numbers.begin(), numbers.end());
+	
 	int temp, i, j;
 
-	for (i = 1; i < size; i++) {
-		for (j = 0; j < size - i; j++) {
-			if (numbers[j] > numbers[j + 1]) {
+	for (i = 1; i < size; i++)
+	{
+		for (j = 0; j < size - i; j++)
+		{
+			if (numbers[j] > numbers[j + 1])
+			{
 				temp = numbers[j];
 				numbers[j] = numbers[j + 1];
 				numbers[j + 1] = temp;
@@ -59,20 +62,68 @@ void bubbleSort()
 				// just swap the lines with the values.
 				// This is function call
 				// for swapping the lines
+				
 				swap(gap * j + 1, gap * (j + 1) + 1, numbers[j + 1], numbers[j]);
 			}
 		}
 	}
 }
 
-int randrange(int low,int high)   /* generates a random number within given range*/
-{	
-	return rand()%(low+high)+low+1;     
+void selectionSort()
+{
+	std::random_shuffle(numbers.begin(), numbers.end());
+	
+	int min, i, j, temp;
+	
+    	for (i = 0; i < size; i++)
+    	{
+        	min = i;
+        
+        	for (j = i + 1; j < size; j++)
+        	{
+            		if (numbers[j] < numbers[min])
+            		{
+                		temp = numbers[min];
+                		numbers[min] = numbers[j];
+                		numbers[j] = temp;
+                
+                		swap(gap * min + 1, gap * j + 1, numbers[j], numbers[min]);
+            		}
+        	}
+    	}
 }
+
+void insertionSort()
+{
+	std::random_shuffle(numbers.begin(), numbers.end());
+	
+	int i, j, temp;
+	
+    	for (i = 1; i < size; i++)
+    	{
+        	temp = numbers[i];
+        	j = i - 1;
+
+        	// Move elements of arr[0..i-1], 
+        	// that are greater than key, to one
+        	// position ahead of their
+        	// current position
+        	while (j >= 0 && numbers[j] > temp)
+        	{
+            		numbers[j + 1] = numbers[j];
+            		swap(gap * j + 1, gap * (j + 1) + 1, numbers[j + 1], numbers[j]);
+            		j = j - 1;
+        	}
+        	numbers[j + 1] = temp;
+    	}
+}
+
 
 // Driver program
 int main()
 {
+	int ch;
+	char ans;
 
 	// auto detection of screen size
 	int gd = DETECT, gm;
@@ -86,15 +137,16 @@ int main()
 	setcurrentwindow(wid1);
 
 	// Initializing the array
-	//for (int i = size; i >= 100; i--)
-		//numbers.push_back(i);
+	for (int i = size; i >= 100; i--)
+		numbers.push_back(i);
 	
 	int temp;
    	for(int i=size;i>=0;i--)
    	{
-      temp=rand()%100;
-      numbers.push_back(temp);
+      		temp=rand()%100;
+      		numbers.push_back(temp);
   	}
+
 	
 	
 	// Find a seed and shuffle the array
@@ -103,36 +155,60 @@ int main()
 	// can be taken to results
 	// such as nearly sorted, already sorted,
 	// reverse sorted to visualize the result
-/*	unsigned seed
-		= chrono::system_clock::now()
-			.time_since_epoch()
-			.count();*/
+	//unsigned seed = chrono::system_clock::now().time_since_epoch().count();
 
-	std::shuffle(numbers.begin(), numbers.end());
+	std::random_shuffle(numbers.begin(), numbers.end());
 
 	// Initial plot of numbers in graph taking
 	// the vector position as x-axis and its
 	// corresponding value will be the height of line.
-	for (int i = 1; i <= gap * size; i += gap) {
+	for (int i = 1; i <= gap * size; i += gap)
+	{
 		line(i, size, i, (size - numbers[i / gap]));
 	}
-
+	
 	// Delay the code
 	delay(200);
+	
+	do
+	{
+		cout << "\n\n***** MENU *****\n1. Bubble Sort\n2. Selection Sort\n3. Insertion Sort\n4. Exit\nEnter your choice: ";
+        	cin >> ch;
+        
+        	switch(ch)
+        	{
+        	case 1:
+        		bubbleSort();
+        		break;
+        	
+        	case 2:
+        		selectionSort();
+        		break;
+        	
+        	case 3:
+        		insertionSort();
+        		break;
+        	
+        	case 4:
+        		for (int i = 0; i < size; i++)
+			{
+				cout << numbers[i] << " ";
+			}
 
-	// Call sort
-	bubbleSort();
 
-	for (int i = 0; i < size; i++) {
-		cout << numbers[i] << " ";
-	}
-	cout << endl;
+			// Wait for sometime .
+			delay(5000);
 
-	// Wait for sometime .
-	delay(5000);
+			// Close the graph
+			closegraph();
+        		break;
+		}
+		
+		cout << "\nDo you want to continue? (y/n) ";
+        	cin >> ans;
+        
+	}while (ans == 'y');
 
-	// Close the graph
-	closegraph();
 
 	return 0;
 }
