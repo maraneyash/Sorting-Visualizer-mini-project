@@ -1,11 +1,11 @@
-// C++ program for visualization of bubble sort
-
 #include <iostream>
 #include <graphics.h>
 #include <bits/stdc++.h>
 #include <vector>
 #include <algorithm>
-
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
 using namespace std;
 
 // Initialize the size with the total numbers to sorted
@@ -14,6 +14,7 @@ vector<int> numbers;
 int size = 200;
 int gap = 4;
 
+
 // Function for swapping the lines graphically
 void swap(int i, int j, int x, int y)
 {
@@ -21,11 +22,11 @@ void swap(int i, int j, int x, int y)
 	// by making it black again and then draw the pixel
 	// for white color.
 	//setlinestyle(1, 0, 3);
-	setcolor(GREEN);
+	setcolor(GREEN); //green
 	line(i, size, i, size - x);
-	setcolor(BLACK);
+	setcolor(BLACK); // black
 	line(i, size, i, size - x);
-	setcolor(YELLOW);
+	setcolor(YELLOW); //yellow
 	line(i, size, i, size - y);
 	
 	//delay(2);
@@ -33,19 +34,17 @@ void swap(int i, int j, int x, int y)
 	// by making it black again and then draw the pixel
 	// for white color.
 	
-	setcolor(BLUE);
+	setcolor(BLACK); //green
 	line(j, size, j, size - y);
-	setcolor(BLACK);
+	setcolor(GREEN); // black
 	line(j, size, j, size - y);
-	setcolor(GREEN);
+	setcolor(GREEN); //green
 	line(j, size, j, size - x);
 }
 
 // Bubble sort function
 void bubbleSort()
 {
-	std::random_shuffle(numbers.begin(), numbers.end());
-	
 	int temp, i, j;
 
 	for (i = 1; i < size; i++)
@@ -69,9 +68,9 @@ void bubbleSort()
 	}
 }
 
+// Selection sort function
 void selectionSort()
 {
-	std::random_shuffle(numbers.begin(), numbers.end());
 	
 	int min, i, j, temp;
 	
@@ -93,9 +92,9 @@ void selectionSort()
     	}
 }
 
+// Insertion sort function
 void insertionSort()
 {
-	std::random_shuffle(numbers.begin(), numbers.end());
 	
 	int i, j, temp;
 	
@@ -111,43 +110,54 @@ void insertionSort()
         	while (j >= 0 && numbers[j] > temp)
         	{
             		numbers[j + 1] = numbers[j];
-            		swap(gap * j + 1, gap * (j + 1) + 1, numbers[j + 1], numbers[j]);
+            		swap(gap * j + 1, gap * (temp) + 1, numbers[temp], numbers[j]);
             		j = j - 1;
         	}
         	numbers[j + 1] = temp;
     	}
 }
 
+// Function to shuffle the array
+void disrupt()
+{	
+	random_shuffle(numbers.begin(), numbers.end());
+	cleardevice();
+	setcolor(YELLOW);
+	for (int i = 1; i <= gap * size; i += gap)
+	{
+		line(i, size, i, (size - numbers[i / gap]));
+		//rectangle(i, (size - numbers[i / gap]), (i+gap), size);
+	}
+}
+
 
 // Driver program
 int main()
 {
-	int ch;
-	char ans;
+	int ch=-1, ans;
 
 	// auto detection of screen size
 	int gd = DETECT, gm;
 	int wid1;
 
+	//initgraph(&gd, &gm, NULL);
+	
 	// Graph initialization
-	initgraph(&gd, &gm, NULL);
-
 	// setting up window size (gap*size) * (size)
 	wid1 = initwindow(gap * size + 1, size + 1);
 	setcurrentwindow(wid1);
 
 	// Initializing the array
-	for (int i = size; i >= 100; i--)
+	for (int i = size; i>=0 ; i--)
 		numbers.push_back(i);
 	
-	int temp;
+/*	int temp;
    	for(int i=size;i>=0;i--)
    	{
       		temp=rand()%100;
       		numbers.push_back(temp);
-  	}
+  	}*/
 
-	
 	
 	// Find a seed and shuffle the array
 	// to make it random.
@@ -157,7 +167,7 @@ int main()
 	// reverse sorted to visualize the result
 	//unsigned seed = chrono::system_clock::now().time_since_epoch().count();
 
-	std::random_shuffle(numbers.begin(), numbers.end());
+	random_shuffle(numbers.begin(), numbers.end());
 
 	// Initial plot of numbers in graph taking
 	// the vector position as x-axis and its
@@ -165,15 +175,19 @@ int main()
 	for (int i = 1; i <= gap * size; i += gap)
 	{
 		line(i, size, i, (size - numbers[i / gap]));
+		//rectangle(i, (size - numbers[i / gap]), (i+gap), size);
 	}
 	
-	// Delay the code
-	delay(200);
 	
-	do
+	// Delay the code
+	//delay(200);
+	
+	
+	while(ch!=NULL)
 	{
-		cout << "\n\n***** MENU *****\n1. Bubble Sort\n2. Selection Sort\n3. Insertion Sort\n4. Exit\nEnter your choice: ";
-        	cin >> ch;
+		system("cls");
+		cout << "\n\n***** MENU *****\n\n1. Bubble Sort\n2. Selection Sort\n3. Insertion Sort\n4. Shuffle\n5. Exit\n\nEnter your choice: ";
+        cin >> ch;
         
         	switch(ch)
         	{
@@ -189,25 +203,34 @@ int main()
         		insertionSort();
         		break;
         	
-        	case 4:
+			case 4:
+				disrupt();
+				break;
+        	
+        	case 5:
+        		cout<<"\nDATA USED:\n";
         		for (int i = 0; i < size; i++)
-			{
-				cout << numbers[i] << " ";
+				{
+					cout << numbers[i] << " ";
+				}
+				
+				cout << "\n\nProcess exited after great time with return value \"THANK YOU\"\n\n\n\n\n";
+				ans=-1;
+
+				break;
+
+				// Close the graph
+				closegraph();	
 			}
-
-
-			// Wait for sometime .
-			delay(5000);
-
-			// Close the graph
-			closegraph();
-        		break;
+		if(ans == -1)
+		{
+			break;
 		}
 		
-		cout << "\nDo you want to continue? (y/n) ";
-        	cin >> ans;
+		/*cout << "\nDo you want to continue? (y/n) ";
+        	cin >> ans;*/
         
-	}while (ans == 'y');
+	}
 
 
 	return 0;
